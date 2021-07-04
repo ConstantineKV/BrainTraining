@@ -26,6 +26,13 @@ public class MainActivity extends AppCompatActivity {
     private int min = 1;
     private int max1 = 10;
     private int min1 = 1;
+    private long startTime = 0;
+    private long currentTime = 0;
+    private int true_answers = 0;
+    private int max_true_answers = 100;
+    private float time_result = 0;
+    private boolean is_true_answer = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +42,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void init()
     {
+        startTime = System.currentTimeMillis();
+
+
         pref = getSharedPreferences("test", MODE_PRIVATE);
         tvMain = findViewById(R.id.tvMain);
         tvRes = findViewById(R.id.tvRes);
         actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle("Hello");
+        tvRes.setText(String.valueOf(true_answers));
     }
 
     private void numbers()
@@ -55,21 +66,45 @@ public class MainActivity extends AppCompatActivity {
         if(number_i < 3)
         {
             text = number_1 + " + " + number_2 + " = " + number_res;
+            is_true_answer = true;
         }
         else
         {
             text = number_1 + " + " + number_2 + " = " + number_false;
+            is_true_answer = false;
         }
         tvMain.setText(String.valueOf(text));
     }
 
     public void OnClickTrue(View view)
     {
-        numbers();
+        if(is_true_answer)
+        {
+            true_answers++;
+        }
+
+            numbers();
+            currentTime = System.currentTimeMillis();
+            time_result = (float)(currentTime - startTime) / 1000;
+            String time = "Time: " + time_result;
+            actionBar.setTitle(time);
+
+            tvRes.setText(String.valueOf(true_answers));
     }
 
     public void onClickFalse(View view)
     {
+        if(!is_true_answer)
+        {
+            true_answers++;
+        }
+                numbers();
 
+                currentTime = System.currentTimeMillis();
+                time_result = (float)(currentTime - startTime) / 1000;
+                String time = "Time: " + time_result;
+                actionBar.setTitle(time);
+
+        tvRes.setText(String.valueOf(true_answers));
     }
 }
